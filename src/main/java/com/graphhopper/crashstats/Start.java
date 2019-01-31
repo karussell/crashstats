@@ -75,7 +75,6 @@ public class Start {
                             continue;
                         }
 
-                        // TODO store more details of crash data: (maximum) type: 1, 2, 3, ... dead and count
                         EdgeIteratorState edge = qr.getClosestEdge();
                         // default is zero
                         edge.set(enc, edge.get(enc) + 1);
@@ -177,7 +176,7 @@ public class Start {
 
             if (key.equals("motorway")) {
                 double val = iter.get(maxSpeedEnc);
-                // 140 means explicitely unlimited
+                // 140 means explicitly unlimited, 0 means unknown speed limit
                 if (val == 140) {
                     motorwayUnlimited += iter.get(crashEnc);
                 }
