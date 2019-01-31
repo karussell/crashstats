@@ -169,6 +169,13 @@ public class Start {
         GraphHopperStorage graph = hopper.getGraphHopperStorage();
         AllEdgesIterator iter = graph.getAllEdges();
         int motorwayUnlimited = 0;
+        double meterUnlimited = 0;
+        double meterLimited = 0;
+        double meterUnknown = 0;
+        int kategorieUnlimited[] = new int[4];
+        int kategorieLimited[] = new int[4];
+        int kategorieUnkown[] = new int[4];
+        IntEncodedValue kategorieEnc = hopper.getEncodingManager().getEncodedValue("ukategorie", IntEncodedValue.class);
         while (iter.next()) {
             String key = iter.get(roadClassEnc).toString();
             Integer count = countMap.get(key);
@@ -179,6 +186,14 @@ public class Start {
                 // 140 means explicitly unlimited, 0 means unknown speed limit
                 if (val == 140) {
                     motorwayUnlimited += iter.get(crashEnc);
+                    meterUnlimited += iter.getDistance();
+                    kategorieUnlimited[iter.get(kategorieEnc)]++;
+                } else if (val == 0) {
+                    meterUnknown += iter.getDistance();
+                    kategorieUnkown[iter.get(kategorieEnc)]++;
+                } else {
+                    meterLimited += iter.getDistance();
+                    kategorieLimited[iter.get(kategorieEnc)]++;
                 }
             }
         }
@@ -186,6 +201,17 @@ public class Start {
         for (Map.Entry<String, Integer> entry : countMap.entrySet()) {
             System.out.println(entry.getKey() + ": " + entry.getValue());
         }
+
+        System.out.println();
+        System.out.println("motorway: " + countMap.get("motorway"));
         System.out.println("motorway unlimited: " + motorwayUnlimited);
+        System.out.println();
+        System.out.println("km limited: " + meterLimited / 1000f);
+        System.out.println("km unlimited: " + meterUnlimited / 1000f);
+        System.out.println("km unknown: " + meterUnknown / 1000f);
+        System.out.println();
+        System.out.println("kategorie limited: " + Arrays.toString(kategorieLimited));
+        System.out.println("kategorie unlimited: " + Arrays.toString(kategorieUnlimited));
+        System.out.println("kategorie unknown: " + Arrays.toString(kategorieUnkown));
     }
 }
