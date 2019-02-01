@@ -3,3 +3,5 @@
 *.iml
 *~
 graph-cache
+# unclear distribution license, see readme
+Jawe2017.csv
